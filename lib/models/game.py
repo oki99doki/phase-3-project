@@ -1,4 +1,5 @@
 import sqlite3 
+from __init__ import CURSOR, CONN
 
 CONN = sqlite3.connect('resources.db', timeout=10) 
 CURSOR = CONN.cursor()
