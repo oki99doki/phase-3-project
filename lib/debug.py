@@ -4,8 +4,26 @@
 from models.__init__ import CONN, CURSOR;
 from models.game import Game
 from models.question import Question
-from models.question import User
+from models.user import User
 import ipdb
 
+
+# Responsible for populating database
+# initialization with all instances of data
+
+'''round_1 = Question(id = 1, question = "Which sport would you coach?", 
+                   answer_one ="Football", answer_one_value = "1",
+                    answer_two_value,
+                    answer_three, answer_three_value, 
+                    answer_four, answer_four_value):
+        )
+'''
+
+
+
+question1 = Question("Which sport would you prefer to coach?", 1.0, "Football", "Baseball", "Fencing", "Synchronized Swimming")
+question2 = Question("Which museum would you prefer to visit?", 1.0, "Air and Space", "Science", "Military", "Art")
+question3 = Question("Assuming money is equivalent, which would you prefer being?", 1.1, "Entrepreneur", "C-Suite Professional", "General", "Director")
+question4 = Question("What type of professionals do you enjoy working with most?", 1.0, "Developer", "Businesspeople", "Lawyers", "Marketers")
 
 ipdb.set_trace()
