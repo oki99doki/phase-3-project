@@ -26,4 +26,25 @@ question2 = Question("Which museum would you prefer to visit?", 1.0, "Air and Sp
 question3 = Question("Assuming money is equivalent, which would you prefer being?", 1.1, "Entrepreneur", "C-Suite Professional", "General", "Director")
 question4 = Question("What type of professionals do you enjoy working with most?", 1.0, "Developer", "Businesspeople", "Lawyers", "Marketers")
 
+
+
+# Add User content for testing
+
+user_1 = User.create("Tom", "tommy123", "t.edison@powersupply.com")
+print(user_1)  # <User 1: Tom, tommy123, t.edison@powersupply.com>
+
+user_2 = User.create("Albert", "Emc2", "einstein@princeton.edu")
+print(user_2)  # <User 2: Albert, Emc2, einstein@princeton.edu>
+
+user_1.name = 'Jefferson'
+user_1.alias = 'jeff00'
+user_1.update()
+print(user_1)
+
+print("Delete Einstein")
+user_2.delete() # delete from db table, object still exists in memory
+print(user_2)
+
+
+
 ipdb.set_trace()
