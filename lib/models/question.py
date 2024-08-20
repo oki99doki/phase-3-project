@@ -1,5 +1,6 @@
+# lib/models/question.py
 import sqlite3 
-from __init__ import CURSOR, CONN
+from . import CURSOR, CONN
 
 CONN = sqlite3.connect('resources.db', timeout=10) 
 CURSOR = CONN.cursor()
@@ -8,7 +9,7 @@ class Question:
 
     all = {}
 
-    def init(self, question, question_value, answer_one, answer_two, answer_three, answer_four, id=None):
+    def __init__(self, question, question_value, answer_one, answer_two, answer_three, answer_four, id=None):
         self.id = id
         self.question = question
         self.question_value = question_value
@@ -16,12 +17,29 @@ class Question:
         self.answer_two = answer_two
         self.answer_three = answer_three
         self.answer_four = answer_four
+        
+    def __repr__(self):
+        return (
+            f"<Question {self.id}, {self.question}, {self.question_value}, {self.answer_one}, {self.answer_two}, {self.answer_three}, {self.answer_four}>"
+        )
 
+    @property
+    def question(self):
+        return self._question
+
+    @question.setter
+    def question(self, question):
+        if isinstance(question, str) and len(question) > 0:
+            self._question = question
+        else:
+            raise ValueError(
+                "Question must be a non-empty string"
+            )
 
     @classmethod 
     def create_table(cls):
         sql = """
-            CREATE TABLE IF NOT EXISTS games98
+            CREATE TABLE IF NOT EXISTS questions
                 (
                     id INTEGER PRIMARY KEY,
                     question TEXT,
@@ -53,40 +71,27 @@ class Question:
         """
         CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four, self.id))
         CONN.commit()
-
-    # Add save mthod here...
-
-    # @classmethod
-    # def initialize_table(cls):
-    #     sql = '''
-    #         ALTER TABLE games
-
-
         
-    #     '''
-
-
-    #     CURSOR.execute(sql)
-    #     CONN.commit()
-
-
-
-
-
-
-    # '''
-    # def __init__(self, id, question, answer_one, answer_one_value, answer_two, answer_two_value,
-    #              answer_three, answer_three_value, answer_four, answer_four_value):
+    def delete(self):
+        sql = "DELETE FROM questions WHERE id=?"
+        CURSOR.execute(sql, (self.id,))
+        CONN.commit()
         
-    #     self.id = id
-    #     self.question = question
-        
-    #     self.answer_one = answer_one
-    #     self.question_one_value = answer_one_value
-    #     self.answer_two = answer_two
-    #     self.question_two_value = answer_two_value
-    #     self.answer_three = answer_three
-    #     self.question_three_value = answer_three_value
-    #     self.answer_four = answer_four
-    #     self.question_four_value = answer_four_value
-    # '''
+    @classmethod
+    def initialize_all(cls):
+        cls.all = {}
+        sql = "SELECT * FROM questions;"
+        CURSOR.execute(sql)
+        rows = CURSOR.fetchall()
+        for row in rows:
+            question = cls(
+                question=row[1],
+                question_value=row[2],
+                answer_one=row[3],
+                answer_two=row[4],
+                answer_three=row[5],
+                answer_four=row[6],
+                id=row[0]
+            )
+            cls.all[question.id] = question
+            
