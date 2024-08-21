@@ -53,6 +53,12 @@ class Question:
         CURSOR.execute(sql)
         CONN.commit()
         
+    @classmethod
+    def drop_table(cls):
+        sql = "DROP TABLE IF EXISTS questions;"
+        CURSOR.execute(sql)
+        CONN.commit()
+        
     def save(self):
         sql = """
             INSERT INTO questions (question, question_value, answer_one, answer_two, answer_three, answer_four) VALUES (?, ?, ?, ?, ?, ?)
@@ -76,6 +82,20 @@ class Question:
         sql = "DELETE FROM questions WHERE id=?"
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
+        
+    @classmethod
+    def seed_questions(cls):
+        question1 = Question("Which sport would you prefer to coach?", 1.0, "Football", "Baseball", "Fencing", "Synchronized Swimming")
+        question2 = Question("Which museum would you prefer to visit?", 1.0, "Air and Space", "Science", "Military", "Art")
+        question3 = Question("Assuming money is equivalent, which would you prefer being?", 1.1, "Entrepreneur", "C-Suite Professional", "General", "Director")
+        question4 = Question("What type of professionals do you enjoy working with most?", 1.0, "Developer", "Businesspeople", "Lawyers", "Marketers")
+
+        question1.save()
+        question2.save()
+        question3.save()
+        question4.save()
+        
+        print("\033[36m" + "Seeded" + "\033[0m" + "\n")
         
     @classmethod
     def initialize_all(cls):

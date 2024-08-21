@@ -9,15 +9,18 @@ import ipdb
 Game.create_table()
 Question.create_table()
 
-question1 = Question("Which sport would you prefer to coach?", 1.0, "Football", "Baseball", "Fencing", "Synchronized Swimming")
-question2 = Question("Which museum would you prefer to visit?", 1.0, "Air and Space", "Science", "Military", "Art")
-question3 = Question("Assuming money is equivalent, which would you prefer being?", 1.1, "Entrepreneur", "C-Suite Professional", "General", "Director")
-question4 = Question("What type of professionals do you enjoy working with most?", 1.0, "Developer", "Businesspeople", "Lawyers", "Marketers")
+# def seed_questions():
+#     question1 = Question("Which sport would you prefer to coach?", 1.0, "Football", "Baseball", "Fencing", "Synchronized Swimming")
+#     question2 = Question("Which museum would you prefer to visit?", 1.0, "Air and Space", "Science", "Military", "Art")
+#     question3 = Question("Assuming money is equivalent, which would you prefer being?", 1.1, "Entrepreneur", "C-Suite Professional", "General", "Director")
+#     question4 = Question("What type of professionals do you enjoy working with most?", 1.0, "Developer", "Businesspeople", "Lawyers", "Marketers")
 
-# question1.save()
-# question2.save()
-# question3.save()
-# question4.save()
+#     question1.save()
+#     question2.save()
+#     question3.save()
+#     question4.save()
+    
+#     print("Seeded")
 
 # user_1 = User.create("Tom", "tommy123", "t.edison@powersupply.com")
 # print(user_1)  # <User 1: Tom, tommy123, t.edison@powersupply.com>
