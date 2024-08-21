@@ -7,12 +7,12 @@ from helpers import (
 # from models.users import Users
 from models.question import Question
 from models.game import Game
-
+from models.user import User
 
 def main():
     
     # User.create_table()
-    Game.create_table()
+    Game.create_table() 
     Question.initialize_all()
     
     while True:
@@ -22,6 +22,12 @@ def main():
             exit_program()
         elif choice == "1":
             play_game()
+        elif choice == "2":
+            Game.view_results()
+        elif choice == "3":
+            Question.create_question()
+        elif choice == "4":
+            User.delete() #(need to include the current user id)
         else:
             print("Invalid choice")
 

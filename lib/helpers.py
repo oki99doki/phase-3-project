@@ -1,6 +1,7 @@
 # lib/helpers.py
 from models.question import Question
 from models.game import Game
+from models.user import User
 
 def play_game():
     # a dictionary is created with four keys and four values, each value initialized to 0
@@ -32,30 +33,19 @@ def play_game():
     # if key_one is the winner, print("You matched to Software Engineering"), elif key_two is the winner, print("You matched to Data Science"),
     # elif key_three is the winner, print("You matched to Cybersecurity"), else print("You matched to UX/UI Product Design")
     if 1 in winners:
-        print("You matched to Software Engineering!")
+        print('\033[31m' + "You matched to Software Engineering!" + '\033[0m')
     elif 2 in winners:
-        print("You matched to Data Science!")
+        print('\033[31m' + "You matched to Data Science!" + '\033[0m')
     elif 3 in winners:
-        print("You matched to Cybersecurity!")
+        print('\033[31m' + "You matched to Cybersecurity!" + '\033[0m')
     else:
-        print("You matched to UX/UI Product Design!")
+        print('\033[31m' + "You matched to UX/UI Product Design!" + '\033[0m')
         
     # # save the result to the database
     # user_id = user_id
     # outcome = max(answer_scores, key=answer_scores.get())
     # Game.create(user_id, outcome)
 
-
 def exit_program():
     print("Goodbye!")
     exit()
-    
-    
-# def display_questions():
-#     questions = Question.all.values()
-#     for question in questions:
-#         print(f"{question.id}. {question.question}")
-#         print(f"1. {question.answer_one}")
-#         print(f"2. {question.answer_two}")
-#         print(f"3. {question.answer_three}")
-#         print(f"4. {question.answer_four}\n")

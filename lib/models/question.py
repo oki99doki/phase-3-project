@@ -95,3 +95,9 @@ class Question:
             )
             cls.all[question.id] = question
             
+    @classmethod
+    def create_question(cls, question, question_value, answer_one, answer_two, answer_three, answer_four):
+        newQuestion = Question(question, question_value, answer_one, answer_two, answer_three, answer_four)
+        newQuestion.save()
+        return newQuestion
+    

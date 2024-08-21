@@ -72,3 +72,16 @@ class Game:
         del type(self).all[self.id]
         self.id = None
         
+    @classmethod
+    def view_results(self):
+        #aggregate the results of the dictionary and display each of the four programs with its number of outcomes
+        sql = """
+        SELECT outcome, COUNT(*) as count
+        FROM games
+        GROUP BY outcome
+        ORDER BY COUNT(*) DESC
+        """
+        CURSOR.execute(sql)
+        rows = CURSOR.fetchall()
+        for row in rows:
+            print(f"{row[0]}: {row[1]}")
