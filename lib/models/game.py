@@ -3,19 +3,57 @@ import sqlite3
 import datetime
 from . import CURSOR, CONN
 
-CONN = sqlite3.connect('resources.db', timeout=10) 
+CONN = sqlite3.connect('resources.db', timeout=10)
 CURSOR = CONN.cursor()
- 
+
 class Game:
-    
     all = {}
     current_game = {}
 
-    def __init__(self, user_id=None, outcome=None, created_at = datetime.datetime.now().date().strftime("%m/%d/%y"), id=None):
+    def __init__(self, user_id=None, outcome=None, created_at=None, id=None):
+        self.id = id
+        self._user_id = None
+        self._outcome = None
+        self._created_at = None
+
+        # Set attributes using property setters to ensure constraints
         self.user_id = user_id
         self.outcome = outcome
-        self.created_at = created_at
-        self.id = id
+        self.created_at = created_at or datetime.datetime.now().date().strftime("%m/%d/%y")
+
+    @property
+    def user_id(self):
+        return self._user_id
+
+    @user_id.setter
+    def user_id(self, value):
+        if isinstance(value, int) and value > 0:
+            self._user_id = value
+        else:
+            raise ValueError("user_id must be a positive integer")
+
+    @property
+    def outcome(self):
+        return self._outcome
+
+    @outcome.setter
+    def outcome(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._outcome = value
+        else:
+            raise ValueError("outcome must be a non-empty string")
+
+    @property
+    def created_at(self):
+        return self._created_at
+
+    @created_at.setter
+    def created_at(self, value):
+        try:
+            datetime.datetime.strptime(value, "%m/%d/%y")
+            self._created_at = value
+        except ValueError:
+            raise ValueError("created_at must be in the format MM/DD/YY")
 
     @classmethod 
     def create_table(cls):
@@ -23,12 +61,11 @@ class Game:
             CREATE TABLE IF NOT EXISTS games
                 (
                     id INTEGER PRIMARY KEY,
-                    user_id INTEGER
+                    user_id INTEGER,
                     outcome TEXT,
                     created_at TEXT
                 );
         """
-        # FOREIGN KEY (user_id) REFERENCES users(id),
         CURSOR.execute(sql)
         CONN.commit()
         
@@ -46,10 +83,11 @@ class Game:
         CONN.commit()
         
         self.id = CURSOR.lastrowid
+        type(self).all[self.id] = self
         
     @classmethod
-    def create(cls, user_id, outcome, created_at = datetime.datetime.now().date().strftime("%m/%d/%y")):
-        game = cls(user_id, outcome)
+    def create(cls, user_id, outcome, created_at=None):
+        game = cls(user_id, outcome, created_at)
         game.save()
         cls.all[game.id] = game
         return game
@@ -58,7 +96,7 @@ class Game:
         sql = """
         UPDATE games
         SET outcome=?, created_at=?
-        HERE id=?
+        WHERE id=?
         """
         CURSOR.execute(sql, (self.outcome, self.created_at, self.id))
         CONN.commit()
@@ -73,8 +111,8 @@ class Game:
         self.id = None
         
     @classmethod
-    def view_results(self):
-        #aggregate the results of the dictionary and display each of the four programs with its number of outcomes
+    def view_results(cls):
+        # Aggregate the results of the dictionary and display each outcome with its count
         sql = """
         SELECT outcome, COUNT(*) as count
         FROM games

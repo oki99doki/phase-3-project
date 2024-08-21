@@ -2,15 +2,22 @@
 import sqlite3 
 from . import CURSOR, CONN
 
-CONN = sqlite3.connect('resources.db', timeout=10) 
+CONN = sqlite3.connect('resources.db', timeout=10)
 CURSOR = CONN.cursor()
 
 class Question:
-
     all = {}
 
     def __init__(self, question, question_value, answer_one, answer_two, answer_three, answer_four, id=None):
         self.id = id
+        self._question = None
+        self._question_value = None
+        self._answer_one = None
+        self._answer_two = None
+        self._answer_three = None
+        self._answer_four = None
+        
+        # Set attributes using property setters
         self.question = question
         self.question_value = question_value
         self.answer_one = answer_one
@@ -28,13 +35,66 @@ class Question:
         return self._question
 
     @question.setter
-    def question(self, question):
-        if isinstance(question, str) and len(question) > 0:
-            self._question = question
+    def question(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._question = value
         else:
-            raise ValueError(
-                "Question must be a non-empty string"
-            )
+            raise ValueError("Question must be a non-empty string")
+
+    @property
+    def question_value(self):
+        return self._question_value
+
+    @question_value.setter
+    def question_value(self, value):
+        if isinstance(value, (int, float)) and value >= 0:
+            self._question_value = float(value)
+        else:
+            raise ValueError("Question value must be a non-negative number")
+
+    @property
+    def answer_one(self):
+        return self._answer_one
+
+    @answer_one.setter
+    def answer_one(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._answer_one = value
+        else:
+            raise ValueError("Answer one must be a non-empty string")
+
+    @property
+    def answer_two(self):
+        return self._answer_two
+
+    @answer_two.setter
+    def answer_two(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._answer_two = value
+        else:
+            raise ValueError("Answer two must be a non-empty string")
+
+    @property
+    def answer_three(self):
+        return self._answer_three
+
+    @answer_three.setter
+    def answer_three(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._answer_three = value
+        else:
+            raise ValueError("Answer three must be a non-empty string")
+
+    @property
+    def answer_four(self):
+        return self._answer_four
+
+    @answer_four.setter
+    def answer_four(self, value):
+        if isinstance(value, str) and len(value) > 0:
+            self._answer_four = value
+        else:
+            raise ValueError("Answer four must be a non-empty string")
 
     @classmethod 
     def create_table(cls):
@@ -61,7 +121,8 @@ class Question:
         
     def save(self):
         sql = """
-            INSERT INTO questions (question, question_value, answer_one, answer_two, answer_three, answer_four) VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO questions (question, question_value, answer_one, answer_two, answer_three, answer_four)
+            VALUES (?, ?, ?, ?, ?, ?)
         """
         CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four))
         CONN.commit()
@@ -73,7 +134,8 @@ class Question:
     def update(self):
         sql = """
             UPDATE questions
-            SET question=?, question_value=?, answer_one=?, answer_two=?, answer_three=?, answer_four=? WHERE id=?
+            SET question=?, question_value=?, answer_one=?, answer_two=?, answer_three=?, answer_four=?
+            WHERE id=?
         """
         CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four, self.id))
         CONN.commit()
@@ -120,4 +182,3 @@ class Question:
         newQuestion = Question(question, question_value, answer_one, answer_two, answer_three, answer_four)
         newQuestion.save()
         return newQuestion
-    
