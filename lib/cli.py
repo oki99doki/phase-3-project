@@ -39,6 +39,8 @@ def main():
             Game.drop_table()
         else:
             print("Invalid choice")
+            
+        #FIND OBJECT BY ID/ATTRIBUTE
 
 
 def menu():

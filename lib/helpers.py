@@ -46,7 +46,7 @@ def play_game():
     # after all questions are answered, the key corresponding to the max question_value is the winner
     max_score = max(answer_scores.values())
     winners = [key for key, value in answer_scores.items() if value == max_score]
-    
+    # print(winners)
     # print the result based on the winner
     if 1 in winners:
         print("\033[31m" + "You matched to Software Engineering!" + "\033[0m" + "\n")
