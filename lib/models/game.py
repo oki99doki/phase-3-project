@@ -9,7 +9,7 @@ CURSOR = CONN.cursor()
 class Game:
     
     all = {}
-    current_game = {}
+    # current_game = {}
 
     def __init__(self, user_id=None, outcome=None, created_at = datetime.datetime.now().date().strftime("%m/%d/%y"), id=None):
         self.user_id = user_id
@@ -23,8 +23,8 @@ class Game:
             CREATE TABLE IF NOT EXISTS games
                 (
                     id INTEGER PRIMARY KEY,
-                    user_id INTEGER
-                    outcome TEXT,
+                    user_id INTEGER,
+                    outcome INTEGER,
                     created_at TEXT
                 );
         """
@@ -40,7 +40,7 @@ class Game:
         
     def save(self):
         sql = """
-            INSERT INTO games (user_id, outcome, created_at) VALUES (?, ?, ?)
+            INSERT INTO games (user_id, outcome, created_at) VALUES (?, ?, ?);
         """
         CURSOR.execute(sql, (self.user_id, self.outcome, self.created_at))
         CONN.commit()
@@ -58,14 +58,14 @@ class Game:
         sql = """
         UPDATE games
         SET outcome=?, created_at=?
-        HERE id=?
+        WHERE id=?;
         """
         CURSOR.execute(sql, (self.outcome, self.created_at, self.id))
         CONN.commit()
         
     def delete(self):
         sql = """
-        DELETE FROM games WHERE id=?
+        DELETE FROM games WHERE id=?;
         """
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
@@ -79,9 +79,19 @@ class Game:
         SELECT outcome, COUNT(*) as count
         FROM games
         GROUP BY outcome
-        ORDER BY COUNT(*) DESC
+        ORDER BY COUNT(*) DESC;
         """
         CURSOR.execute(sql)
         rows = CURSOR.fetchall()
         for row in rows:
-            print(f"{row[0]}: {row[1]}")
+            outcome = row[0]
+            count = row[1]
+            
+            if outcome == 1:
+                print(f"\033[32mSoftware Engineering: {count}\033[0m")
+            elif outcome == 2:
+                print(f"\033[32mData Science: {count}\033[0m")
+            elif outcome == 3:
+                print(f"\033[32mCybersecurity: {count}\033[0m")
+            else:
+                print(f"\033[32mUX/UI Product Design: {count}\033[0m")

@@ -14,9 +14,9 @@ from models.user import User
 def main():
     
     # User.create_table()
-    Game.create_table() 
-    Question.create_table()
-    Question.initialize_all()
+    # Game.create_table() 
+    # Question.create_table()
+    # Question.initialize_all()
     
     while True:
         menu()
@@ -24,17 +24,19 @@ def main():
         if choice == "0":
             exit_program()
         elif choice == "1":
-            play_game()
-        elif choice == "2":
-            Game.view_results()
-        elif choice == "3":
-            add_new_question()
-        elif choice == "4":
-            User.delete() #(need to include the current user id)
-        elif choice == "5":
-            Question.drop_table()
-        elif choice == "6":
             setup_default_questions()
+        elif choice == "2":
+            play_game()
+        elif choice == "3":
+            Game.view_results()
+        elif choice == "4":
+            add_new_question()
+        elif choice == "5":
+            User.delete() #(need to include the current user id)
+        elif choice == "6":
+            Question.drop_table()
+        elif choice == "7":
+            Game.drop_table()
         else:
             print("Invalid choice")
 
@@ -42,12 +44,13 @@ def main():
 def menu():
     print("Welcome to Career Chooser! Please select an option:")
     print("0. Exit the program")
-    print("1. Start game")
-    print("2. View results")
-    print("3. Add a new question")
-    print("4. Delete current user")
-    print("5. Delete all questions")
-    print("6. Seed with default questions")
+    print("1. Seed with default questions")
+    print("2. Start game")
+    print("3. View results")
+    print("4. Add a new question")
+    print("5. Delete current user")
+    print("6. Delete all questions")
+    print("7. Delete all games")
 
 
 if __name__ == "__main__":

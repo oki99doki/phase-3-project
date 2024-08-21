@@ -61,7 +61,7 @@ class Question:
         
     def save(self):
         sql = """
-            INSERT INTO questions (question, question_value, answer_one, answer_two, answer_three, answer_four) VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO questions (question, question_value, answer_one, answer_two, answer_three, answer_four) VALUES (?, ?, ?, ?, ?, ?);
         """
         CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four))
         CONN.commit()
@@ -73,13 +73,13 @@ class Question:
     def update(self):
         sql = """
             UPDATE questions
-            SET question=?, question_value=?, answer_one=?, answer_two=?, answer_three=?, answer_four=? WHERE id=?
+            SET question=?, question_value=?, answer_one=?, answer_two=?, answer_three=?, answer_four=? WHERE id=?;
         """
         CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four, self.id))
         CONN.commit()
         
     def delete(self):
-        sql = "DELETE FROM questions WHERE id=?"
+        sql = "DELETE FROM questions WHERE id=?;"
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
         
