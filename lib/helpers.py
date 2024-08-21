@@ -17,7 +17,7 @@ def play_game():
     questions = Question.all.values()
     for question in questions:
         while True:
-            print(f"{question.id}. {question.question}")
+            print("\033[34m" f"Question {question.id}. {question.question}" + "\033[0m")
             print(f"1. {question.answer_one}")
             print(f"2. {question.answer_two}")
             print(f"3. {question.answer_three}")
@@ -49,13 +49,26 @@ def play_game():
         print("\033[31m" + "You matched to UX/UI Product Design!" + "\033[0m" + "\n")
         
     # save the result to the database
-    # user_id = random.randint(1, 1000)
+    # user_id = user_id #random.randint(1, 1000)
     # outcome = max(answer_scores, key=answer_scores.get())
     # print(outcome)
     # Game.save(user_id, outcome)
     
-def setup_default_questions(self):
+    
+def add_new_question():
+    question = input("Enter a question: ")
+    question_value = int(input("Enter the question value (integer): "))
+    answer_one = input("Enter answer one: ")
+    answer_two = input("Enter answer two: ")
+    answer_three = input("Enter answer three: ")
+    answer_four = input("Enter answer four: ")
+    
+    Question.create_question(question, question_value, answer_one, answer_two, answer_three, answer_four)
+    print("\033[36m" + "Question added successfully!" + "\033[0m" + "\n")
+    
+def setup_default_questions():
     Question.drop_table()
+    Question.create_table()
     Question.seed_questions()
 
 def exit_program():

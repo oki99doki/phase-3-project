@@ -2,7 +2,9 @@
 
 from helpers import (
     exit_program,
-    play_game
+    play_game,
+    add_new_question,
+    setup_default_questions
 )
 # from models.users import Users
 from models.question import Question
@@ -26,13 +28,13 @@ def main():
         elif choice == "2":
             Game.view_results()
         elif choice == "3":
-            Question.create_question()
+            add_new_question()
         elif choice == "4":
             User.delete() #(need to include the current user id)
         elif choice == "5":
             Question.drop_table()
         elif choice == "6":
-            Question.seed_questions()
+            setup_default_questions()
         else:
             print("Invalid choice")
 
