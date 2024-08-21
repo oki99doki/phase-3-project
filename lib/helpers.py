@@ -1,7 +1,7 @@
 # lib/helpers.py
 from models.question import Question
 from models.game import Game
-from models.user import User
+# from models.user import User
 import random
         
 def play_game():

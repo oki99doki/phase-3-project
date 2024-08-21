@@ -38,7 +38,7 @@ class Game:
 
     @outcome.setter
     def outcome(self, value):
-        if isinstance(value, int) and len(value) > 0:
+        if isinstance(value, int):
             self._outcome = value
         else:
             raise ValueError("outcome must be a positive integer")

@@ -37,10 +37,12 @@ def main():
             Question.drop_table()
         elif choice == "7":
             Game.drop_table()
+        elif choice == "8":
+            Game.find_by_id()  # <-- WE NEED TO ADD FIND OBJECT BY ID/ATTRIBUTE
         else:
             print("Invalid choice")
             
-        #FIND OBJECT BY ID/ATTRIBUTE
+
 
 
 def menu():
