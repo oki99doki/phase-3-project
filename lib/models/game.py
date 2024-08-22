@@ -1,6 +1,8 @@
 # lib/models/game.py
 import sqlite3
 import datetime
+import ipdb
+
 from . import CURSOR, CONN
 
 CONN = sqlite3.connect('resources.db', timeout=10)
@@ -26,6 +28,7 @@ class Game:
 
     @user_id.setter
     def user_id(self, value):
+        #ipdb.set_trace()
         if isinstance(value, int) and value > 0:
             self._user_id = value
         else:
@@ -56,13 +59,16 @@ class Game:
 
     @classmethod 
     def create_table(cls):
+        """ SK: Create a new table to persist the attributes of Game instances """
+        """ SK: added FOREIGN KEY line """
         sql = """
             CREATE TABLE IF NOT EXISTS games
                 (
                     id INTEGER PRIMARY KEY,
                     user_id INTEGER,
                     outcome INTEGER,
-                    created_at TEXT
+                    created_at TEXT,
+                    FOREIGN KEY (user_id) REFERENCES users(id)
                 );
         """
         CURSOR.execute(sql)
@@ -75,6 +81,7 @@ class Game:
         CONN.commit()
         
     def save(self):
+        # SK: reviewed, no changes necessary.
         sql = """
             INSERT INTO games (user_id, outcome, created_at) VALUES (?, ?, ?);
         """
@@ -86,18 +93,20 @@ class Game:
         
     @classmethod
     def create(cls, user_id, outcome, created_at=None):
+        # SK: reviewed. No changed necessary.
         game = cls(user_id, outcome, created_at)
         game.save()
         cls.all[game.id] = game
         return game
     
     def update(self):
+        # SK: reviewed and added "user_ip into SET ... and CURSOR.execute ..."
         sql = """
         UPDATE games
-        SET outcome=?, created_at=?
+        SET outcome=?, created_at=?, user_id=?
         WHERE id=?;
         """
-        CURSOR.execute(sql, (self.outcome, self.created_at, self.id))
+        CURSOR.execute(sql, (self.outcome, self.created_at, self.user_id, self.id))
         CONN.commit()
         
     def delete(self):

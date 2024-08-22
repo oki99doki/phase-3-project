@@ -1,10 +1,13 @@
 # lib/helpers.py
 from models.question import Question
 from models.game import Game
-# from models.user import User
+from models.user import User
+
+#from models.user import User # SK: uncomment this line so it imports User
 import random
+import ipdb
         
-def play_game():
+def play_game(cur_user):
     
     # load questions from the database
     Question.initialize_all()
@@ -58,7 +61,9 @@ def play_game():
         print("\033[31m" + "You matched to UX/UI Product Design!" + "\033[0m" + "\n")
         
     # save the result to the database
-    user_id = random.randint(1, 1000)
+    #user_id = random.randint(1, 1000)
+    user_id = cur_user
+    
     outcome = winners[0]
     game = Game(user_id, outcome)
     game.save()
@@ -86,3 +91,12 @@ def setup_default_questions():
 def exit_program():
     print("Goodbye!")
     exit()
+
+
+# # SK: added this function block
+def find_by():
+#     #use a trailing underscore not to override the built-in id function
+    name = input("Enter the user name: ")
+    user = User.find_by_name(name)
+    #ipdb.set_trace()
+    print(user) if user else print(f'User {user} not found')

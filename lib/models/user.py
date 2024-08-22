@@ -17,6 +17,11 @@ class User:
         self.alias = alias
         self.email = email
 
+    def __repr__(self):
+        return (
+            f"<User {self.id}, {self.name}, {self.alias}, {self.email}>"
+        )
+
     @property
     def id(self):
         return self._id
@@ -129,3 +134,91 @@ class User:
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
         self._id = None
+    
+    # SK: add this block of code (games-method) to compute associated Game instances
+    def games(self):
+        """Return list of games associated with current user"""
+        from game import Game
+        sql = """
+            SELECT * FROM games
+            WHERE user_id = ?
+        """
+        CURSOR.execute(sql, (self.id,),)
+
+        rows = CURSOR.fetchall()
+        return [
+            Game.instance_from_db(row) for row in rows
+        ]
+    
+
+    # SK: added this class method for Find Usewr by ID functionality
+    @classmethod 
+    def find_by_name(cls, name):
+        sql = """
+                SELECT * FROM users WHERE name=?;
+            """
+        row = CURSOR.execute(sql,(name,)).fetchone()
+        if not row: 
+            return None 
+        else: 
+            return cls.create_instance(row)
+            #return User(row)
+    
+    '''
+    BACKUP original
+    @classmethod 
+    def find_by_id(cls, id):
+        sql = """
+                SELECT * FROM users WHERE id=?;
+            """
+        row = CURSOR.execute(sql,(id,)).fetchone()
+        if not row: 
+            return None 
+        else: 
+            return cls.create_instance(row)
+    '''
+    
+        
+
+    @classmethod 
+    def find_or_create_by(cls, name=None, high_score=0):
+        select_sql = """ 
+            SELECT * FROM users WHERE 
+            name = ?;
+        """
+        row = CURSOR.execute(select_sql, (name,)).fetchone()
+        if not row: 
+            insert_sql = """ INSERT INTO users (name, high_score) VALUES (?, ?);"""
+            CURSOR.execute(insert_sql, (name, high_score))
+            CONN.commit()
+            return cls.find_by_id(CURSOR.lastrowid)
+        else:
+            return cls.create_instance(row)
+        
+    
+    @classmethod 
+    def create_instance(cls, row):
+        #row = ['id', 'name', 'alias, 'email']
+        user = cls(
+            name=row[1],
+            alias=row[2],
+            email=row[3],
+            id=row[0]
+        )
+        return user
+    
+
+    def get_recent_user():
+        #conn = sqlite3.connect('your_database.db')
+        #cur = conn.cursor()
+
+        # Execute a query to retrieve the ID of the last row from the users table
+        CURSOR.execute("SELECT id FROM users ORDER BY id DESC LIMIT 1")
+        row = CURSOR.fetchone()
+
+        # Check if a row was returned
+        if row:
+            # Assign the ID to cur_user
+            return row[0]
+        else:
+            print("No users found.")
