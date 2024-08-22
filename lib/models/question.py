@@ -2,6 +2,7 @@
 import sqlite3 
 from . import CURSOR, CONN
 
+# Database connection
 CONN = sqlite3.connect('resources.db', timeout=10)
 CURSOR = CONN.cursor()
 
@@ -109,7 +110,7 @@ class Question:
 
     @classmethod
     def create_table(cls):
-        """Create the table if it does not exist."""
+        """Create the questions table if it does not exist."""
         sql = """
             CREATE TABLE IF NOT EXISTS questions
                 (
@@ -127,25 +128,34 @@ class Question:
 
     @classmethod
     def drop_table(cls):
-        """Drop the table that persists Question instances."""
+        """Drop the questions table."""
         sql = "DROP TABLE IF EXISTS questions;"
         CURSOR.execute(sql)
         CONN.commit()
 
     def save(self):
-        sql = """
-            INSERT INTO questions (question, question_value, answer_one, answer_two, answer_three, answer_four)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """
-        CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four))
-        CONN.commit()
-        
-        self.id = CURSOR.lastrowid
-        type(self).all[self.id] = self
+        """Insert a new question record or update an existing one."""
+        if self.id is None:
+            sql = """
+                INSERT INTO questions (question, question_value, answer_one, answer_two, answer_three, answer_four)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """
+            CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four))
+            CONN.commit()
+            self.id = CURSOR.lastrowid
+            type(self).all[self.id] = self
+        else:
+            self.update()  # Update if ID exists
 
-                
+    @classmethod
+    def create(cls, question, question_value, answer_one, answer_two, answer_three, answer_four):
+        """Initialize a new Question instance and save it to the database."""
+        new_question = cls(question, question_value, answer_one, answer_two, answer_three, answer_four)
+        new_question.save()
+        return new_question
+
     def update(self):
-        """Update the table row corresponding to the current Question instance."""
+        """Update the existing question record."""
         if self.id is None:
             raise ValueError("Cannot update a question that has not been saved to the database")
 
@@ -158,18 +168,19 @@ class Question:
         CONN.commit()
 
     def delete(self):
-        """Delete the table row corresponding to the current Question instance."""
+        """Delete the question record."""
         if self.id is None:
             raise ValueError("Cannot delete a question that has not been saved to the database")
 
-        sql = "DELETE FROM questions WHERE id=?"
+        sql = "DELETE FROM questions WHERE id=?;"
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
-        self._id = None
+        del type(self).all[self.id]
+        self.id = None
 
     @classmethod
     def find_by_id(cls, id):
-        """Find a Question instance by ID."""
+        """Find a Question instance by its ID."""
         sql = "SELECT * FROM questions WHERE id=?"
         CURSOR.execute(sql, (id,))
         row = CURSOR.fetchone()
@@ -187,7 +198,7 @@ class Question:
 
     @classmethod
     def get_all(cls):
-        """Get all Question instances."""
+        """Retrieve all Question instances."""
         sql = "SELECT * FROM questions"
         CURSOR.execute(sql)
         rows = CURSOR.fetchall()
@@ -234,3 +245,9 @@ class Question:
                 id=row[0]
             )
             cls.all[question.id] = question
+
+    @staticmethod
+    def close_connection():
+        """Close the database connection."""
+        if CONN:
+            CONN.close()
