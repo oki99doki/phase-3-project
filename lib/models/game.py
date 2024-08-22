@@ -8,7 +8,6 @@ CURSOR = CONN.cursor()
 
 class Game:
     all = {}
-    # current_game = {}
 
     def __init__(self, user_id=None, outcome=None, created_at=None, id=None):
         self.id = id
@@ -112,7 +111,7 @@ class Game:
         
     @classmethod
     def view_results(cls):
-        # Aggregate the results of the dictionary and display each outcome with its count
+        # aggregate the results of the dictionary and display each outcome with its count
         sql = """
         SELECT outcome, COUNT(*) as count
         FROM games

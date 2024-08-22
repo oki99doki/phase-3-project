@@ -11,13 +11,8 @@ from models.question import Question
 from models.game import Game
 from models.user import User
 
+
 def main():
-    
-    # User.create_table()
-    # Game.create_table() 
-    # Question.create_table()
-    # Question.initialize_all()
-    
     while True:
         menu()
         choice = input("> ")
@@ -43,9 +38,7 @@ def main():
             Game.view_my_games()  # <-- WE NEED TO ADD VIEW RELATED OBJECTS FOR THE CURRENT USER
         else:
             print("Invalid choice")
-            
-
-
+                    
 
 def menu():
     print("Welcome to Career Chooser! Please select an option:")
