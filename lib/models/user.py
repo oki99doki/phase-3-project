@@ -2,10 +2,16 @@ import sqlite3
 from . import CURSOR, CONN
 import re
 
-CONN = sqlite3.connect('resources.db', timeout=10)
-CURSOR = CONN.cursor()
+    # Database connection utility functions
+def get_connection():
+    return sqlite3.connect('resources.db', timeout=10)
+
+def get_cursor(conn):
+    return conn.cursor()
 
 class User:
+    table_name = 'users'
+
     def __init__(self, name, alias, email, id=None):
         self._id = id
         self._name = None
@@ -68,65 +74,104 @@ class User:
 
     @classmethod 
     def create_table(cls):
-        sql = """
-            CREATE TABLE IF NOT EXISTS users
-                (
-                    id INTEGER PRIMARY KEY,
-                    name TEXT,
-                    alias TEXT,
-                    email TEXT
-                );
+        """Create the table if it does not exist."""
+        conn = get_connection()
+        cursor = get_cursor(conn)
+        sql = f"""
+            CREATE TABLE IF NOT EXISTS {cls.table_name} (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                alias TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE
+            );
         """
-        CURSOR.execute(sql)
-        CONN.commit()
+        cursor.execute(sql)
+        conn.commit()
+        conn.close()
 
     @classmethod
     def drop_table(cls):
-        """ Drop the table that persists User instances """
-        sql = '''
-            DROP TABLE IF EXISTS users;
-        '''
-        CURSOR.execute(sql)
-        CONN.commit()
-
-    def save(self):
-        """Insert a new row into the users table and update the instance id."""
-        if self.id is None:
-            sql = '''
-                INSERT INTO users (name, alias, email)
-                VALUES (?, ?, ?)
-            '''
-            CURSOR.execute(sql, (self.name, self.alias, self.email))
-            CONN.commit()
-            self._id = CURSOR.lastrowid
-        else:
-            self.update()  # If ID exists, update the existing record
+        """Drop the table that persists User instances."""
+        conn = get_connection()
+        cursor = get_cursor(conn)
+        sql = f"DROP TABLE IF EXISTS {cls.table_name};"
+        cursor.execute(sql)
+        conn.commit()
+        conn.close()
 
     @classmethod
     def create(cls, name, alias, email):
-        """ Initialize a new User instance and save the object to the database """
+        """Initialize a new User instance and save it to the database."""
         user = cls(name, alias, email)
         user.save()
         return user
 
+    @classmethod
+    def find_by_id(cls, id):
+        """Find a User instance by ID."""
+        conn = get_connection()
+        cursor = get_cursor(conn)
+        sql = f"SELECT * FROM {cls.table_name} WHERE id = ?"
+        cursor.execute(sql, (id,))
+        row = cursor.fetchone()
+        conn.close()
+        if row:
+            return cls(name=row[1], alias=row[2], email=row[3], id=row[0])
+        return None
+
+    @classmethod
+    def get_all(cls):
+        """Get all User instances."""
+        conn = get_connection()
+        cursor = get_cursor(conn)
+        sql = f"SELECT * FROM {cls.table_name}"
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        conn.close()
+        return [cls(name=row[1], alias=row[2], email=row[3], id=row[0]) for row in rows]
+
+    def save(self):
+        """Insert a new row into the users table or update the existing record."""
+        if self.id is None:
+            self._insert()
+        else:
+            self.update()  # If ID exists, update the existing record
+
+    def _insert(self):
+        """Insert a new row into the users table."""
+        conn = get_connection()
+        cursor = get_cursor(conn)
+        sql = f"""
+            INSERT INTO {self.table_name} (name, alias, email)
+            VALUES (?, ?, ?)
+        """
+        cursor.execute(sql, (self.name, self.alias, self.email))
+        conn.commit()
+        self._id = cursor.lastrowid
+        conn.close()
+
     def update(self):
-        """ Update the table row corresponding to the current User instance """
+        """Update the table row corresponding to the current User instance."""
         if self.id is None:
             raise ValueError("Cannot update a user that has not been saved to the database")
-        
-        sql = """
-            UPDATE users
+
+        conn = get_connection()
+        cursor = get_cursor(conn)
+        sql = f"""
+            UPDATE {self.table_name}
             SET name = ?, alias = ?, email = ?
             WHERE id = ?
         """
-        CURSOR.execute(sql, (self.name, self.alias, self.email, self.id))
-        CONN.commit()
+        cursor.execute(sql, (self.name, self.alias, self.email, self.id))
+        conn.commit()
+        conn.close()
 
     def delete(self):
-        """ Delete the table row corresponding to the current User instance """
+        """Delete the table row corresponding to the current User instance."""
         if self.id is None:
             raise ValueError("Cannot delete a user that has not been saved to the database")
 
+<<<<<<< HEAD
         sql = """
             DELETE FROM users
             WHERE id = ?
@@ -222,3 +267,12 @@ class User:
             return row[0]
         else:
             print("No users found.")
+=======
+        conn = get_connection()
+        cursor = get_cursor(conn)
+        sql = f"DELETE FROM {self.table_name} WHERE id = ?"
+        cursor.execute(sql, (self.id,))
+        conn.commit()
+        conn.close()
+        self._id = None
+>>>>>>> 8ecdfdad8b7050f204d342671450cdc6098230b6
