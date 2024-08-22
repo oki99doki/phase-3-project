@@ -1,10 +1,19 @@
 # lib/helpers.py
 from models.question import Question
 from models.game import Game
-from models.user import User
+# from models.user import User
 import random
         
 def play_game():
+    
+    # load questions from the database
+    Question.initialize_all()
+    
+    # let user know to seed questions first if there are none
+    if not Question.all:
+        print("No questions available. Please seed questions first.")
+        return
+    
     # a dictionary is created with four keys and four values, each value initialized to 0
     answer_scores = {
         1: 0,
@@ -37,7 +46,7 @@ def play_game():
     # after all questions are answered, the key corresponding to the max question_value is the winner
     max_score = max(answer_scores.values())
     winners = [key for key, value in answer_scores.items() if value == max_score]
-    
+    # print(winners)
     # print the result based on the winner
     if 1 in winners:
         print("\033[31m" + "You matched to Software Engineering!" + "\033[0m" + "\n")
@@ -49,10 +58,10 @@ def play_game():
         print("\033[31m" + "You matched to UX/UI Product Design!" + "\033[0m" + "\n")
         
     # save the result to the database
-    # user_id = user_id #random.randint(1, 1000)
-    # outcome = max(answer_scores, key=answer_scores.get())
-    # print(outcome)
-    # Game.save(user_id, outcome)
+    user_id = random.randint(1, 1000)
+    outcome = winners[0]
+    game = Game(user_id, outcome)
+    game.save()
     
     
 def add_new_question():
@@ -69,7 +78,10 @@ def add_new_question():
 def setup_default_questions():
     Question.drop_table()
     Question.create_table()
+    Question.initialize_all()
     Question.seed_questions()
+    Game.create_table()
+
 
 def exit_program():
     print("Goodbye!")

@@ -2,11 +2,14 @@ import sqlite3
 from . import CURSOR, CONN
 import re
 
-CONN = sqlite3.connect('resources.db', timeout=10)
-CURSOR = CONN.cursor()
+    # Database connection utility functions
+def get_connection():
+    return sqlite3.connect('resources.db', timeout=10)
+
+def get_cursor(conn):
+    return conn.cursor()
 
 class User:
-    
     table_name = 'users'
 
     def __init__(self, name, alias, email, id=None):
@@ -69,8 +72,8 @@ class User:
         """Create the table if it does not exist."""
         conn = get_connection()
         cursor = get_cursor(conn)
-        sql = """
-            CREATE TABLE IF NOT EXISTS users (
+        sql = f"""
+            CREATE TABLE IF NOT EXISTS {cls.table_name} (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 alias TEXT NOT NULL,
@@ -86,14 +89,14 @@ class User:
         """Drop the table that persists User instances."""
         conn = get_connection()
         cursor = get_cursor(conn)
-        sql = "DROP TABLE IF EXISTS users;"
+        sql = f"DROP TABLE IF EXISTS {cls.table_name};"
         cursor.execute(sql)
         conn.commit()
         conn.close()
 
     @classmethod
     def create(cls, name, alias, email):
-        """Initialize a new User instance and save the object to the database."""
+        """Initialize a new User instance and save it to the database."""
         user = cls(name, alias, email)
         user.save()
         return user
@@ -123,7 +126,7 @@ class User:
         return [cls(name=row[1], alias=row[2], email=row[3], id=row[0]) for row in rows]
 
     def save(self):
-        """Insert a new row into the users table and update the instance id."""
+        """Insert a new row into the users table or update the existing record."""
         if self.id is None:
             self._insert()
         else:

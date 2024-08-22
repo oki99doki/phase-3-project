@@ -107,7 +107,7 @@ class Question:
         else:
             raise ValueError("Answer four must be a non-empty string")
 
-    @classmethod 
+    @classmethod
     def create_table(cls):
         """Create the table if it does not exist."""
         sql = """
@@ -133,25 +133,17 @@ class Question:
         CONN.commit()
 
     def save(self):
-        """Insert a new row into the questions table and update the instance id."""
-        if self.id is None:
-            sql = """
-                INSERT INTO questions (question, question_value, answer_one, answer_two, answer_three, answer_four)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """
-            CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four))
-            CONN.commit()
-            self._id = CURSOR.lastrowid
-        else:
-            self.update()  # If ID exists, update the existing record
+        sql = """
+            INSERT INTO questions (question, question_value, answer_one, answer_two, answer_three, answer_four)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """
+        CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four))
+        CONN.commit()
+        
+        self.id = CURSOR.lastrowid
+        type(self).all[self.id] = self
 
-    @classmethod
-    def create(cls, question, question_value, answer_one, answer_two, answer_three, answer_four):
-        """Initialize a new Question instance and save the object to the database."""
-        new_question = cls(question, question_value, answer_one, answer_two, answer_three, answer_four)
-        new_question.save()
-        return new_question
-
+                
     def update(self):
         """Update the table row corresponding to the current Question instance."""
         if self.id is None:
@@ -160,7 +152,7 @@ class Question:
         sql = """
             UPDATE questions
             SET question=?, question_value=?, answer_one=?, answer_two=?, answer_three=?, answer_four=?
-            WHERE id=?
+            WHERE id=?;
         """
         CURSOR.execute(sql, (self.question, self.question_value, self.answer_one, self.answer_two, self.answer_three, self.answer_four, self.id))
         CONN.commit()

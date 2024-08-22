@@ -6,8 +6,8 @@ from models.question import Question
 from models.user import User
 import ipdb
 
-Game.create_table()
-Question.create_table()
+# Game.create_table()
+# Question.create_table()
 
 # def seed_questions():
 #     question1 = Question("Which sport would you prefer to coach?", 1.0, "Football", "Baseball", "Fencing", "Synchronized Swimming")

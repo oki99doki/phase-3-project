@@ -8,7 +8,6 @@ CURSOR = CONN.cursor()
 
 class Game:
     all = {}
-    current_game = {}
 
     def __init__(self, user_id=None, outcome=None, created_at=None, id=None):
         self._id = id
@@ -49,10 +48,10 @@ class Game:
 
     @outcome.setter
     def outcome(self, value):
-        if isinstance(value, str) and len(value) > 0:
+        if isinstance(value, int):
             self._outcome = value
         else:
-            raise ValueError("outcome must be a non-empty string")
+            raise ValueError("outcome must be an integer")
 
     @property
     def created_at(self):
@@ -66,7 +65,7 @@ class Game:
         except ValueError:
             raise ValueError("created_at must be in the format MM/DD/YY")
 
-    @classmethod 
+    @classmethod
     def create_table(cls):
         """Create the games table if it does not exist."""
         sql = """
@@ -74,13 +73,13 @@ class Game:
                 (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id INTEGER,
-                    outcome TEXT,
+                    outcome INTEGER,
                     created_at TEXT
                 );
         """
         CURSOR.execute(sql)
         CONN.commit()
-        
+
     @classmethod
     def drop_table(cls):
         """Drop the games table."""
@@ -114,9 +113,9 @@ class Game:
             raise ValueError("Cannot update a game that has not been saved to the database")
 
         sql = """
-            UPDATE games
-            SET user_id=?, outcome=?, created_at=?
-            WHERE id=?
+        UPDATE games
+        SET user_id=?, outcome=?, created_at=?
+        WHERE id=?;
         """
         CURSOR.execute(sql, (self.user_id, self.outcome, self.created_at, self.id))
         CONN.commit()
@@ -167,9 +166,25 @@ class Game:
         SELECT outcome, COUNT(*) as count
         FROM games
         GROUP BY outcome
-        ORDER BY COUNT(*) DESC
+        ORDER BY COUNT(*) DESC;
         """
         CURSOR.execute(sql)
         rows = CURSOR.fetchall()
         for row in rows:
-            print(f"{row[0]}: {row[1]}")
+            outcome = row[0]
+            count = row[1]
+
+            if outcome == 1:
+                print(f"\033[32mSoftware Engineering: {count}\033[0m")
+            elif outcome == 2:
+                print(f"\033[32mData Science: {count}\033[0m")
+            elif outcome == 3:
+                print(f"\033[32mCybersecurity: {count}\033[0m")
+            else:
+                print(f"\033[32mUX/UI Product Design: {count}\033[0m")
+
+    @staticmethod
+    def close_connection():
+        """Close the database connection."""
+        if CONN:
+            CONN.close()

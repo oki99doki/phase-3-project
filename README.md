@@ -1,25 +1,47 @@
-# phase-3-project
+# Welcome to ClassyChoices
+## Enjoy choosing your future
 
-A one sentence description of your CLI.
-Our CLI will present a series of questions to users and depending on the answers to these questions, the CLI will provide the current user a recommended course in which to enroll.
+# Phase-3-062424-Project_Group_1
+Phase 3 - Week 9 Group Project - Group 1
 
-A description / diagram of your database including relationships, constraints, intended CRUD actions. This should not be code. It needs to be something visual.
-Database - Tables to use:
-User: id INTEGER (PK), name TEXT, game_id INTEGER
-Game: id INTEGER, outcome TEXT, link_to_User_table INTEGER (FK)
+## Setup
+- [ ] Fork
+- [ ] Clone
+- [ ] Navigate to the directory
+- [ ] Enter pipenv install
+- [ ] Enter pipenv shell
+- [ ] Enter python lib/cli.py
+- [ ] Enter 1 to seed default questions
+- [ ] Enter 2 to play take the quiz
+- [ ] Enter 3 to view the most popular courses
+- [ ] Enter 0 to exit, but why would you ever want to stop playing?
 
-A decision tree of the flow of your CLI. Preferably a screenshot of a drawio diagram.
-![image](https://github.com/user-attachments/assets/20c58f8e-debb-4608-9124-f084fa14de5c)
+# SE-EAST-Phase-3-062424
+## Project Requirements
+- [ ] A one sentence description of your CLI.
+- [ ] A description / diagram of your database including relationships, constraints, intended CRUD actions.  This should not be code.  It needs to be something visual.
+- [ ] A decision tree of the flow of your CLI.  Preferably a screenshot of a drawio diagram.
+- [ ] An example of your data.
+- [ ] Three stretch goals in case you finish your MVP by the due date
+- [ ] A kanban board showing how you will be dividing tasks among partners
 
+## CLI Description
+- [ ] Our CLI will present a series of questions to users and depending on the answers to these questions, the CLI will provide the current user a recommended course in which to enroll.
 
-An example of your data
-![image](https://github.com/user-attachments/assets/737bd24c-b0fc-4d93-aa9f-123a34a8a9f3)
+## Database Diagram
+- [ ] ![alt text](image.png)
 
-Three stretch goals in case you finish your MVP by the due date
-1.) Making another quiz
-2.) Adding extra questions
-3.) Creating other recommended content that can be suggested to the user.
+## Decision Tree (screenshot)
+- [ ] ![alt text](image-1.png)
 
-A kanban board showing how you will be dividing tasks among partners
-![image](https://github.com/user-attachments/assets/abb30b14-0c6c-40a3-8b9c-7ff78d1f053f)
-https://trello.com/b/xArbcXiP/phase-iii-kanban
+## Example Data
+- [ ] ![alt text](image-2.png)
+
+## Three Stretch Goals
+- [ ] Color/format CLI text
+- [ ] Allow users to add questions
+- [ ] Automate extra question content
+
+## Kanban Board
+- [ ] https://trello.com/b/xArbcXiP/phase-iii-kanban
+- [ ] ![alt text](image-3.png)
